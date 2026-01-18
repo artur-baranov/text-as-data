@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+    - "!/docs/scripts/*.qmd"
+    - "!drafts.qmd"
+    
+website:
+  title: "Text-as-Data Workshop"
+  favicon: fav.png
+  navbar:
+    right:
+      - text: "Slides"
+        href: slides/slides.qmd
+
+format:
+  html:
+    theme: 
+      light: [flatly, custom.scss]
+    mainfont: roboto
+    css: styles.css
+    toc: true
+
+
+

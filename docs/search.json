@@ -1,0 +1,114 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "",
+    "text": "View slides in new window"
+  },
+  {
+    "objectID": "slides/slides.html#hands-on-methods-for-text-as-data-research",
+    "href": "slides/slides.html#hands-on-methods-for-text-as-data-research",
+    "title": "Text-as-Data Workshop",
+    "section": "Hands-on Methods for Text-as-Data Research",
+    "text": "Hands-on Methods for Text-as-Data Research\n\n\nArtur Baranov, PhD Candidate\nDepartment of Political Science, Northwestern University\nartur.baranov@u.northwestern.edu\n\nInstructions\n\nOpen URL (or Scan QR code)\nPrepare RStudio\n\n\n\n\n Open: artur-baranov.github.io/text-as-data\n\n\n\n\n\n\n\n\n\n\n\n\nJanuary 20th, 2026"
+  },
+  {
+    "objectID": "slides/slides.html#motivation-i",
+    "href": "slides/slides.html#motivation-i",
+    "title": "Text-as-Data Workshop",
+    "section": "Motivation (i)",
+    "text": "Motivation (i)\n\n\n How do government and opposition parties differ in their sentiment in statements on the past, present, and future (Mueller, 2022)?\n\n\n\n\n\nIn the Meantime:\nOpen URL & Prepare RStudio\nartur-baranov.github.io/text-as-data"
+  },
+  {
+    "objectID": "slides/slides.html#motivation-ii",
+    "href": "slides/slides.html#motivation-ii",
+    "title": "Text-as-Data Workshop",
+    "section": "Motivation (ii)",
+    "text": "Motivation (ii)\n\n\n How do autocracies adapt their political messaging during periods of leadership succession (Boussalis et al, 2023)?\n\n\n\n\n\nIn the Meantime:\nOpen URL & Prepare RStudio\nartur-baranov.github.io/text-as-data"
+  },
+  {
+    "objectID": "slides/slides.html#motivation-iii",
+    "href": "slides/slides.html#motivation-iii",
+    "title": "Text-as-Data Workshop",
+    "section": "Motivation (iii)",
+    "text": "Motivation (iii)\n\n\n Under what conditions elites “overpraise” the ruler and imitate their rhetoric (Baturo et al, 2025)?\n\n\n\n\n\nIn the Meantime:\nOpen URL & Prepare RStudio\nartur-baranov.github.io/text-as-data"
+  },
+  {
+    "objectID": "slides/slides.html#so-why-text-analysis",
+    "href": "slides/slides.html#so-why-text-analysis",
+    "title": "Text-as-Data Workshop",
+    "section": "So, why Text Analysis?",
+    "text": "So, why Text Analysis?\n\n\n\n\nSocial Scientists have always used texts as data.\n\n\n\n\n\nIn the Meantime:\nOpen URL & Prepare RStudio\nartur-baranov.github.io/text-as-data"
+  },
+  {
+    "objectID": "slides/slides.html#text-analysis-assumptions",
+    "href": "slides/slides.html#text-analysis-assumptions",
+    "title": "Text-as-Data Workshop",
+    "section": "Text Analysis Assumptions",
+    "text": "Text Analysis Assumptions\n\n\n\n\n\nTexts represent an observable implication of some underlying characteristic of interest\n\nAn attribute of the author\nA sentiment or emotion\nSalience of a political issue\n\nTexts can be represented through extracting their features\n\nMost common is the bag of words assumption\nMany other possible definitions of “features” (e.g. word embeddings)\n\nA document-feature matrix can be analyzed using quantitative methods to produce meaningful and valid estimates of the underlying characteristic of interest\n\n(Benoit, 2018)\n\n\n\n\nIn the Meantime:\nOpen URL & Prepare RStudio\nartur-baranov.github.io/text-as-data"
+  },
+  {
+    "objectID": "slides/slides.html#text-analysis-principles",
+    "href": "slides/slides.html#text-analysis-principles",
+    "title": "Text-as-Data Workshop",
+    "section": "Text Analysis Principles",
+    "text": "Text Analysis Principles\n\n\n\n\n\nAll quantitative models for textual analysis are wrong – but some are useful\nQuantitative methods for text amplify resources\nThere is no globally best method for automated text analysis\nValidate, validate, validate (!!!)\n\n(Grimmer and Stewart, 2013)\n\n\n\n\nIn the Meantime:\nOpen URL & Prepare RStudio\nartur-baranov.github.io/text-as-data"
+  },
+  {
+    "objectID": "slides/slides.html#this-workshop",
+    "href": "slides/slides.html#this-workshop",
+    "title": "Text-as-Data Workshop",
+    "section": "This Workshop",
+    "text": "This Workshop\n\n\n\n\n\nis applied\n\nfollow and execute the code\ndo the exercises\nask questions\n\nfocuses on “traditional” QTA methods\n\nwe will cover AI only lightly\notherwise, we have to have another class\n\nTime to turn to practice\n\n\n\n\n\nIn the Meantime:\nOpen URL & Prepare RStudio\nartur-baranov.github.io/text-as-data"
+  },
+  {
+    "objectID": "index.html#coding-terminology",
+    "href": "index.html#coding-terminology",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "Coding Terminology",
+    "text": "Coding Terminology\n\nCode Chunk\nTo insert a Code Chunk, you can use Ctrl+Alt+I on Windows and Cmd+Option+I on Mac. Run the whole chunk by clicking the green triangle, or one/multiple lines by using Ctrl + Enter or Command + Return on Mac.\n\nprint(\"Code Chunk\")\n\n[1] \"Code Chunk\"\n\n\n\n\nFunction and Arguments\nMost of the functions we want to run require an argument For example, the function print() above takes the argument “Code Chunk”.\n\nfunction(argument)\n\n\n\nData structures\nThere are many data structures, but the most important to know the following.\n\nObjects. Those are individual units, e.g. a number or a word.\n\n\nnumber = 1\nnumber\n\nword = \"Northwestern\"\nword\n\n[1] 1\n[1] \"Northwestern\"\n\n\n\nVectors. Vectors are collections of objects. To create one, you will need to use function c().\n\n\nnumbers = c(1, 2, 3)\nnumbers\n\n[1] 1 2 3\n\n\n\nDataframes. Dataframes are the most used data structure. Last quarter you spend a lot of time working with it. It is a table with data. Columns are called variables, and those are vectors. You can access a column using $ operator.\n\n\ndf = data.frame(numbers, \n                numbers_multiplied = numbers * 2)\ndf\ndf$numbers_multiplied\n\n  numbers numbers_multiplied\n1       1                  2\n2       2                  4\n3       3                  6\n[1] 2 4 6\n\n\nChatGPT outperforms crowd workers for text-annotation tasks paper"
+  },
+  {
+    "objectID": "index.html#code-chunk",
+    "href": "index.html#code-chunk",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "Code Chunk",
+    "text": "Code Chunk\nTo insert a Code Chunk, you can use Ctrl+Alt+I on Windows and Cmd+Option+I on Mac. Run the whole chunk by clicking the green triangle, or one/multiple lines by using Ctrl + Enter or Command + Return on Mac.\n\nprint(\"Code Chunk\")\n\n[1] \"Code Chunk\""
+  },
+  {
+    "objectID": "index.html#function-and-arguments-data-structures",
+    "href": "index.html#function-and-arguments-data-structures",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "Function and Arguments, Data structures",
+    "text": "Function and Arguments, Data structures\nMost of the functions we want to run require an argument For example, the function print() above takes the argument “Code Chunk”.\n\nfunction(argument)\n\nFor example, consider an object. Try printing it by highlighting the required line and pressing Ctrl+Enter or Cmd+Return on Mac.\n\nnumber = 1\nnumber\nprint(number)\n\nword = \"Northwestern\"\nword\n\n[1] 1\n[1] 1\n[1] \"Northwestern\""
+  },
+  {
+    "objectID": "index.html#libraries",
+    "href": "index.html#libraries",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "Libraries",
+    "text": "Libraries\nQuite frequently, we use additional libraries to extend the capabilities of R. In this workshop we highly relying on quanteda and tidyverse. Please, if you do not have these libraries, install them now.\nCheck if you have them installed\n\nc(\"tidyverse\", \"quanteda\") %in% rownames(installed.packages())\n\n[1] TRUE TRUE\n\n\nIf you do not, please install them using the chunk below. Run it only once!. Instead of ... insert the package that is missing.\n\ninstall.packages(\"...\")\n\nNow, load them into the current R session.\n\nlibrary(tidyverse)\nlibrary(quanteda)"
+  },
+  {
+    "objectID": "index.html#corpus",
+    "href": "index.html#corpus",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "Corpus",
+    "text": "Corpus\nThe collections of documents is called corpus. For example, imagine you have two documents.\n\nsimple_corpus = corpus(c(\"A corpus is a set of documents.\",\n                         \"This is the second document in the corpus\"))\n\nsimple_corpus\n\nCorpus consisting of 2 documents.\ntext1 :\n\"A corpus is a set of documents.\"\n\ntext2 :\n\"This is the second document in the corpus\"\n\n\nAdditionally, you can add document-level variables. For example, an authorship, number of characters, regions, etc etc. Let’s add number of characters in each document. What does $ operator do?\n\ndocvars(simple_corpus)$charcount = nchar(simple_corpus)\n\nLet’s see the result\n\ndocvars(simple_corpus)\n\n  charcount\n1        31\n2        41\n\n\nIn other words, quanteda stores information about the text separately from the text itself. Important for the future manipulations!"
+  },
+  {
+    "objectID": "index.html#tokens",
+    "href": "index.html#tokens",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "Tokens",
+    "text": "Tokens\nEach document consists of tokens. When we tokenize a corpus, the text is segmented into tokens (words or sentences) based on word boundaries. In other words, each word in the document is separated into its own token.\n\nsimple_toks = tokens(simple_corpus,\n                     remove_punct = TRUE)\n\nsimple_toks\n\nTokens consisting of 2 documents and 1 docvar.\ntext1 :\n[1] \"A\"         \"corpus\"    \"is\"        \"a\"         \"set\"       \"of\"       \n[7] \"documents\"\n\ntext2 :\n[1] \"This\"     \"is\"       \"the\"      \"second\"   \"document\" \"in\"       \"the\"     \n[8] \"corpus\""
+  },
+  {
+    "objectID": "index.html#document-feature-matrix",
+    "href": "index.html#document-feature-matrix",
+    "title": "Hands-On Methods for Text-as-Data Research",
+    "section": "Document-feature matrix",
+    "text": "Document-feature matrix\nRepresents frequencies of features in documents in a matrix, for example, tokens. Let’s constructs a document-feature matrix (DFM) from a tokens object. Run the chunk, take a look on the result. What did DFM do to our data?\n\nsimple_dfm = dfm(simple_toks)\n\nsimple_dfm\n\nDocument-feature matrix of: 2 documents, 11 features (40.91% sparse) and 1 docvar.\n       features\ndocs    a corpus is set of documents this the second document\n  text1 2      1  1   1  1         1    0   0      0        0\n  text2 0      1  1   0  0         0    1   2      1        1\n[ reached max_nfeat ... 1 more feature ]\n\n\nThis allows us to, say, calculate the most frequent words in the whole corpus.\n\ntopfeatures(simple_dfm, 10)\n\n        a    corpus        is       the       set        of documents      this \n        2         2         2         2         1         1         1         1 \n   second  document \n        1         1"
+  }
+]

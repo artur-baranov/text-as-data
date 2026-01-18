@@ -1,0 +1,159 @@
+---
+title: ""
+format: 
+  html:
+    toc: true
+---
+
+# Hands-On Methods for Text-as-Data Research
+
+# Rules of the Workshop
+
+The workshop is intentionally applied. This means that on your laptop, you should download and launch the script. Then:
+
+* Follow the instructor by executing the code and modifying it as needed.
+
+* Complete the exercises.
+
+* Ask questions.
+
+The script is extensively commented, so you can return to any part of it later.
+
+::: {.text-center}
+[Download script](https://artur-baranov.github.io/text-as-data/index.qmd){.btn .btn-primary .btn role="button" download="workshop_qta.qmd" style="width:200px" target="_blank"}
+:::
+
+In case you do not have RStudio installed, see the instruction [here](https://artur-baranov.github.io/install-R). 
+
+# Brief Coding Recap
+
+First, we start with a quick recap of RStudio.
+
+## Code Chunk
+
+To insert a **Code Chunk**, you can use `Ctrl+Alt+I` on Windows and `Cmd+Option+I` on Mac. Run the whole chunk by clicking the green triangle, or one/multiple lines by using `Ctrl + Enter` or `Command + Return` on Mac.
+
+```{r}
+print("Code Chunk")
+```
+
+## Function and Arguments, Data structures
+
+Most of the **functions** we want to run require an **argument** For example, the function `print()` above takes the argument "Code Chunk".
+
+```{r}
+#| eval: false
+
+function(argument)
+```
+
+For example, consider an **object**. Try printing it by highlighting the required line and pressing `Ctrl+Enter` or `Cmd+Return` on Mac.
+
+```{r}
+#| results: hold
+
+number = 1
+number
+print(number)
+
+word = "Northwestern"
+word
+```
+
+## Libraries
+
+Quite frequently, we use additional libraries to extend the capabilities of R. In this workshop we highly relying on `quanteda` and `tidyverse`. Please, if you do not have these libraries, install them now.
+
+Check if you have them installed
+
+```{r}
+c("tidyverse", "quanteda") %in% rownames(installed.packages())
+```
+If you do not, please install them using the chunk below. **Run it only once!**. Instead of `...` insert the package that is missing. 
+
+```{r}
+#| eval: false
+
+install.packages("...")
+```
+
+Now, load them into the current R session.
+
+```{r}
+#| message: false
+
+library(tidyverse)
+library(quanteda)
+```
+
+
+# Quanteda Objects
+
+Quanteda is a widely used R package for quantitative text analysis (QTA), developed by fellow political scientists. It stands for quantitative analysis of textual data.
+
+## Corpus
+
+The collections of documents is called corpus. For example, imagine you have two documents.
+
+```{r}
+simple_corpus = corpus(c("A corpus is a set of documents.",
+                         "This is the second document in the corpus"))
+
+simple_corpus
+```
+
+Additionally, you can add document-level variables. For example, an authorship, number of characters, regions, etc etc. Let's add number of characters in each document. What does `$` operator do? 
+
+```{r}
+docvars(simple_corpus)$charcount = nchar(simple_corpus)
+```
+
+Let's see the result
+
+```{r}
+docvars(simple_corpus)
+```
+
+In other words, quanteda stores information about the text separately from the text itself. Important for the future manipulations!
+
+## Tokens
+ 
+Each document consists of tokens. When we tokenize a corpus, the text is segmented into tokens (words or sentences) based on word boundaries. In other words, each word in the document is separated into its own token.
+
+```{r}
+simple_toks = tokens(simple_corpus,
+                     remove_punct = TRUE)
+
+simple_toks
+```
+
+## Document-feature matrix
+
+Represents frequencies of features in documents in a matrix, for example, tokens. Let's constructs a document-feature matrix (DFM) from a tokens object. Run the chunk, take a look on the result. What did DFM do to our data?
+
+```{r}
+simple_dfm = dfm(simple_toks)
+
+simple_dfm
+```
+
+This allows us to, say, calculate the most frequent words in the whole corpus.
+
+```{r}
+topfeatures(simple_dfm, 10)
+```
+
+
+# Bag-of-Words approach
+
+We completely destroy the order of words in our corpus. 
+
+
+ChatGPT outperforms crowd workers for text-annotation tasks paper
+
+
+
+# Check List
+
+- [ ] R doesn't scare me anymore
+
