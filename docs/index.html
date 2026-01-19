@@ -145,6 +145,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#hands-on-methods-for-text-as-data-research" id="toc-hands-on-methods-for-text-as-data-research" class="nav-link active" data-scroll-target="#hands-on-methods-for-text-as-data-research">Hands-On Methods for Text-as-Data Research</a></li>
   <li><a href="#rules-of-the-workshop" id="toc-rules-of-the-workshop" class="nav-link" data-scroll-target="#rules-of-the-workshop">Rules of the Workshop</a></li>
+  <li><a href="#agenda" id="toc-agenda" class="nav-link" data-scroll-target="#agenda">Agenda</a></li>
   <li><a href="#brief-coding-recap" id="toc-brief-coding-recap" class="nav-link" data-scroll-target="#brief-coding-recap">Brief Coding Recap</a>
   <ul class="collapse">
   <li><a href="#code-chunk" id="toc-code-chunk" class="nav-link" data-scroll-target="#code-chunk">Code Chunk</a></li>
@@ -158,6 +159,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#document-feature-matrix" id="toc-document-feature-matrix" class="nav-link" data-scroll-target="#document-feature-matrix">Document-feature matrix</a></li>
   </ul></li>
   <li><a href="#bag-of-words-approach" id="toc-bag-of-words-approach" class="nav-link" data-scroll-target="#bag-of-words-approach">Bag-of-Words approach</a></li>
+  <li><a href="#inaugural-speeches" id="toc-inaugural-speeches" class="nav-link" data-scroll-target="#inaugural-speeches">Inaugural Speeches</a>
+  <ul class="collapse">
+  <li><a href="#most-similar-addresses" id="toc-most-similar-addresses" class="nav-link" data-scroll-target="#most-similar-addresses">Most Similar Addresses</a></li>
+  </ul></li>
   <li><a href="#check-list" id="toc-check-list" class="nav-link" data-scroll-target="#check-list">Check List</a></li>
   </ul>
 </nav>
@@ -184,6 +189,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><a href="https://artur-baranov.github.io/text-as-data/index.qmd" class="btn btn-primary" role="button" download="workshop_qta.qmd" style="width:200px" target="_blank">Download script</a></p>
 </div>
 <p>In case you do not have RStudio installed, see the instruction <a href="https://artur-baranov.github.io/install-R">here</a>.</p>
+</section>
+<section id="agenda" class="level1">
+<h1>Agenda</h1>
+<ul>
+<li><p>…</p></li>
+<li><p>…</p></li>
+</ul>
 </section>
 <section id="brief-coding-recap" class="level1">
 <h1>Brief Coding Recap</h1>
@@ -224,19 +236,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Quite frequently, we use additional libraries to extend the capabilities of R. In this workshop we highly relying on <code>quanteda</code> and <code>tidyverse</code>. Please, if you do not have these libraries, install them now.</p>
 <p>Check if you have them installed</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"quanteda"</span>) <span class="sc">%in%</span> <span class="fu">rownames</span>(<span class="fu">installed.packages</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE TRUE</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"quanteda"</span>, <span class="st">"quanteda.textstats"</span>) <span class="sc">%in%</span> <span class="fu">rownames</span>(<span class="fu">installed.packages</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>If you do not, please install them using the chunk below. <strong>Run it only once!</strong>. Instead of <code>...</code> insert the package that is missing.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"..."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"..."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, load them into the current R session.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda.textstats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -247,10 +257,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="corpus">Corpus</h2>
 <p>The collections of documents is called corpus. For example, imagine you have two documents.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>simple_corpus <span class="ot">=</span> <span class="fu">corpus</span>(<span class="fu">c</span>(<span class="st">"A corpus is a set of documents."</span>,</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"This is the second document in the corpus"</span>))</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>simple_corpus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>simple_corpus <span class="ot">=</span> <span class="fu">corpus</span>(<span class="fu">c</span>(<span class="st">"A corpus is a set of documents."</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"This is the second document in the corpus"</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>simple_corpus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Corpus consisting of 2 documents.
 text1 :
@@ -262,11 +272,11 @@ text2 :
 </div>
 <p>Additionally, you can add document-level variables. For example, an authorship, number of characters, regions, etc etc. Let’s add number of characters in each document. What does <code>$</code> operator do?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(simple_corpus)<span class="sc">$</span>charcount <span class="ot">=</span> <span class="fu">nchar</span>(simple_corpus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(simple_corpus)<span class="sc">$</span>charcount <span class="ot">=</span> <span class="fu">nchar</span>(simple_corpus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s see the result</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(simple_corpus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(simple_corpus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  charcount
 1        31
@@ -279,10 +289,10 @@ text2 :
 <h2 class="anchored" data-anchor-id="tokens">Tokens</h2>
 <p>Each document consists of tokens. When we tokenize a corpus, the text is segmented into tokens (words or sentences) based on word boundaries. In other words, each word in the document is separated into its own token.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>simple_toks <span class="ot">=</span> <span class="fu">tokens</span>(simple_corpus,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">remove_punct =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>simple_toks</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>simple_toks <span class="ot">=</span> <span class="fu">tokens</span>(simple_corpus,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">remove_punct =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>simple_toks</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Tokens consisting of 2 documents and 1 docvar.
 text1 :
@@ -299,9 +309,9 @@ text2 :
 <h2 class="anchored" data-anchor-id="document-feature-matrix">Document-feature matrix</h2>
 <p>Represents frequencies of features in documents in a matrix, for example, tokens. Let’s constructs a document-feature matrix (DFM) from a tokens object. Run the chunk, take a look on the result. What did DFM do to our data?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>simple_dfm <span class="ot">=</span> <span class="fu">dfm</span>(simple_toks)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>simple_dfm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>simple_dfm <span class="ot">=</span> <span class="fu">dfm</span>(simple_toks)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>simple_dfm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Document-feature matrix of: 2 documents, 11 features (40.91% sparse) and 1 docvar.
        features
@@ -311,9 +321,15 @@ docs    a corpus is set of documents this the second document
 [ reached max_nfeat ... 1 more feature ]</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="bag-of-words-approach" class="level1">
+<h1>Bag-of-Words approach</h1>
+<p>We completely destroy the order of words in our corpus. This is a quick visualization.</p>
+<p><img src="images/bag-of-words.png" class="img-fluid"> change to URL</p>
 <p>This allows us to, say, calculate the most frequent words in the whole corpus.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">topfeatures</span>(simple_dfm, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">topfeatures</span>(simple_dfm, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        a    corpus        is       the       set        of documents      this 
         2         2         2         2         1         1         1         1 
@@ -321,12 +337,264 @@ docs    a corpus is set of documents this the second document
         1         1 </code></pre>
 </div>
 </div>
+<p>change to URL <img src="images/quanteda_objects.png" class="img-fluid" alt="Quanteda Objects"></p>
 </section>
-</section>
-<section id="bag-of-words-approach" class="level1">
-<h1>Bag-of-Words approach</h1>
-<p>We completely destroy the order of words in our corpus.</p>
+<section id="inaugural-speeches" class="level1">
+<h1>Inaugural Speeches</h1>
+<p>Quanteda has some datasets embedded directly into the package. Let’s explore one of these - the presidential inaugural address texts.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data_corpus_inaugural </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Corpus consisting of 60 documents and 4 docvars.
+1789-Washington :
+"Fellow-Citizens of the Senate and of the House of Representa..."
+
+1793-Washington :
+"Fellow citizens, I am again called upon by the voice of my c..."
+
+1797-Adams :
+"When it was first perceived, in early times, that no middle ..."
+
+1801-Jefferson :
+"Friends and Fellow Citizens: Called upon to undertake the du..."
+
+1805-Jefferson :
+"Proceeding, fellow citizens, to that qualification which the..."
+
+1809-Madison :
+"Unwilling to depart from examples of the most revered author..."
+
+[ reached max_ndoc ... 54 more documents ]</code></pre>
+</div>
+</div>
+<p>For details about the corpus, you can use the <code>summary()</code> function. Types are unique tokens, and tokens are usually words. In this way, we can get a sense of how diverse the president’s vocabulary is.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(data_corpus_inaugural)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>If you want to get some specific information about the corpus, you can use the following commands.</p>
+<ul>
+<li><p><code>ntoken()</code>, number of tokens in each document</p></li>
+<li><p><code>ndoc()</code>, number of documents in corpus</p></li>
+<li><p><code>docvars()</code>, access document-level variables</p></li>
+</ul>
+<p>Let’s these together</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="most-similar-addresses" class="level2">
+<h2 class="anchored" data-anchor-id="most-similar-addresses">Most Similar Addresses</h2>
+<p>Imagine you are interested in measuring the similarity between addresses starting in 2000. To do this, you will need to:</p>
+<ul>
+<li><p>Subset corpus</p></li>
+<li><p>Preprocess text</p></li>
+<li><p>Create a document-feature matrix</p></li>
+<li><p>Calculate similarity/distance measures</p></li>
+</ul>
+<p>First, subset the corpus based on the document-level variable <code>Year</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data_inaug_2000 <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corpus_subset</span>(Year <span class="sc">&gt;=</span> <span class="dv">2000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, check how many speeches are left.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ndoc</span>(data_inaug_2000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7</code></pre>
+</div>
+</div>
+<p>Now, let’s process the text. This step is <strong>crucial</strong> for text analysis. If you do not preprocess the text, punctuation (commas, periods), symbols, or numbers can influence the calculation of various measures.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>toks_inaug_2000 <span class="ot">=</span> data_inaug_2000 <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens</span>(<span class="at">remove_punct =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_symbols =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_numbers =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>toks_inaug_2000[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tokens consisting of 1 document and 4 docvars.
+2001-Bush :
+ [1] "President"     "Clinton"       "distinguished" "guests"       
+ [5] "and"           "my"            "fellow"        "citizens"     
+ [9] "the"           "peaceful"      "transfer"      "of"           
+[ ... and 1,571 more ]</code></pre>
+</div>
+</div>
+<p>Additionally, some words may appear very frequently, such as articles (a, the) and conjunctions (and, if). These are called stopwords. It is good practice to remove them, as they convey little information about the similarity between texts but can significantly affect the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>toks_inaug_2000 <span class="ot">=</span> toks_inaug_2000 <span class="sc">%&gt;%</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>(<span class="st">"en"</span>)) </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>toks_inaug_2000[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tokens consisting of 1 document and 4 docvars.
+2001-Bush :
+ [1] "President"     "Clinton"       "distinguished" "guests"       
+ [5] "fellow"        "citizens"      "peaceful"      "transfer"     
+ [9] "authority"     "rare"          "history"       "yet"          
+[ ... and 771 more ]</code></pre>
+</div>
+</div>
+<p>Lastly, we stem the tokens. Stemming means truncating words so different version of the words becomes unified. Use <code>tokens_wordstem()</code> for stemming. Let’s try together.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tokens</span>(<span class="st">"citizen citizens run running"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>So, stem our tokens.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>toks_inaug_2000 <span class="ot">=</span> toks_inaug_2000 <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_wordstem</span>()</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>toks_inaug_2000[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tokens consisting of 1 document and 4 docvars.
+2001-Bush :
+ [1] "Presid"      "Clinton"     "distinguish" "guest"       "fellow"     
+ [6] "citizen"     "peac"        "transfer"    "author"      "rare"       
+[11] "histori"     "yet"        
+[ ... and 771 more ]</code></pre>
+</div>
+</div>
+<p>Good news! Last step. Finally, we can create Document-feature matrix out of processed text.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dfm_inaug_2000 <span class="ot">=</span> toks_inaug_2000 <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm</span>()</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>dfm_inaug_2000</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Document-feature matrix of: 7 documents, 1,955 features (70.33% sparse) and 4 docvars.
+            features
+docs         presid clinton distinguish guest fellow citizen peac transfer
+  2001-Bush       3       2           1     1      1      10    2        1
+  2005-Bush       4       1           1     1      3       7    2        0
+  2009-Obama      1       0           0     0      1       1    4        0
+  2013-Obama      2       0           1     1      3       8    5        0
+  2017-Trump      5       1           0     0      1       4    1        3
+  2021-Biden      7       0           1     1      5       1    5        1
+            features
+docs         author rare
+  2001-Bush       2    1
+  2005-Bush       1    0
+  2009-Obama      0    0
+  2013-Obama      1    0
+  2017-Trump      0    0
+  2021-Biden      0    1
+[ reached max_ndoc ... 1 more document, reached max_nfeat ... 1,945 more features ]</code></pre>
+</div>
+</div>
+<p>Side note, a fascinating feature of quanteda is that, even after many manipulations on the corpus, the document-level variables are accessible.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(dfm_inaug_2000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Year President FirstName      Party
+1 2001      Bush George W. Republican
+2 2005      Bush George W. Republican
+3 2009     Obama    Barack Democratic
+4 2013     Obama    Barack Democratic
+5 2017     Trump Donald J. Republican
+6 2021     Biden Joseph R. Democratic
+7 2025     Trump Donald J. Republican</code></pre>
+</div>
+</div>
+<p>Now, let’s calculate the distance between texts. By default, this is measured using Euclidean distance. Interpreting it is quite straightforward: the larger the value, the less similar the texts are.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>address_distance <span class="ot">=</span> <span class="fu">textstat_dist</span>(dfm_inaug_2000)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>address_distance</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>textstat_dist object; method = "euclidean"
+           2001-Bush 2005-Bush 2009-Obama 2013-Obama 2017-Trump 2021-Biden
+2001-Bush          0      54.4       50.7       49.1       48.8       59.0
+2005-Bush       54.4         0       62.3       57.7       58.0       67.1
+2009-Obama      50.7      62.3          0       48.5       55.6       56.7
+2013-Obama      49.1      57.7       48.5          0       55.2       57.8
+2017-Trump      48.8      58.0       55.6       55.2          0       60.4
+2021-Biden      59.0      67.1       56.7       57.8       60.4          0
+2025-Trump      68.0      72.4       72.9       73.7       57.4       73.3
+           2025-Trump
+2001-Bush        68.0
+2005-Bush        72.4
+2009-Obama       72.9
+2013-Obama       73.7
+2017-Trump       57.4
+2021-Biden       73.3
+2025-Trump          0</code></pre>
+</div>
+</div>
+<p>To simplify the task of interpretation, we can visualize the results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>df_distance <span class="ot">=</span> <span class="fu">as.matrix</span>(address_distance) <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"doc1"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>doc1, <span class="at">names_to =</span> <span class="st">"doc2"</span>, <span class="at">values_to =</span> <span class="st">"distance"</span>) </span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_distance, <span class="fu">aes</span>(doc1, doc2, <span class="at">fill =</span> distance)) <span class="sc">+</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Textual Distance Between Presidential Inaugural Addresses (2001-2025)"</span>,</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Distance"</span>) <span class="sc">+</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>What are the most “distant” speeches?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>df_distance <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(doc1) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(distance, <span class="at">n =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 3
+# Groups:   doc1 [7]
+  doc1       doc2       distance
+  &lt;chr&gt;      &lt;chr&gt;         &lt;dbl&gt;
+1 2001-Bush  2025-Trump     68.0
+2 2005-Bush  2025-Trump     72.4
+3 2009-Obama 2025-Trump     72.9
+4 2013-Obama 2025-Trump     73.7
+5 2017-Trump 2021-Biden     60.4
+6 2021-Biden 2025-Trump     73.3
+7 2025-Trump 2013-Obama     73.7</code></pre>
+</div>
+</div>
+<p>Now, let’s transform the corpus to the level of paragraphs rather than whole speeches. This provides a more granular overview of the left corpus.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>data_inaug_2000 <span class="ot">=</span> data_inaug_2000 <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corpus_reshape</span>(<span class="at">to =</span> <span class="st">"paragraphs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>How many documents are there now? Why?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ndoc</span>(data_inaug_2000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 524</code></pre>
+</div>
+</div>
+<p>We can get a more detailed overview with the <code>summary()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">...</span>(data_inaug_2000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Explore <code>corpus_reshape()</code>. Reshape <code>data_corpus_inaugural</code>to the level of sentences and store this object as <code>data_inaug_sentences</code>. What is the number of sentences (=number of documents) in this text corpus?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>data_corpus_inaugural_sent <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span> <span class="fu">corpus_reshape</span>(<span class="at">to =</span> <span class="st">'sentences'</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ndoc</span>(data_corpus_inaugural)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 60</code></pre>
+</div>
+</div>
+<p>Exercise</p>
+<p>Distance between texts (textstat_dist): leave only democrat, reshape to paragraphs, use textstat_dist to find the closest paragraphs across presidents</p>
+<p>Vocabulary + frequences</p>
+<p>Keyness analysis (week 6): words that are used by republicans/democrats</p>
+<p>Naive Bayes (textmodel_nb, week 7)</p>
+<p>Topic modeling</p>
+<p>Sentiment: https://tutorials.quanteda.io/advanced-operations/targeted-dictionary-analysis/</p>
 <p>ChatGPT outperforms crowd workers for text-annotation tasks paper</p>
+</section>
 </section>
 <section id="check-list" class="level1">
 <h1>Check List</h1>

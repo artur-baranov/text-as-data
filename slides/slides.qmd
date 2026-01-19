@@ -329,7 +329,7 @@ qr_code('https://artur-baranov.github.io/text-as-data') |>
   
 * focuses on "traditional" QTA methods
   
-  + we will cover AI only lightly
+  + we will cover AI only briefly
   + otherwise, we have to have another class
 
 * Time to turn to practice
