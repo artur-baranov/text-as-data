@@ -1,11 +1,11 @@
 ---
-title: ""
+title: "Hands-On Methods for Text-as-Data Research"
+author: "[Artur Baranov](https://artur-baranov.github.io)"
+date: "01/20/2026"
 format: 
   html:
     toc: true
 ---
-
-# Hands-On Methods for Text-as-Data Research
 
 # Rules of the Workshop
 
