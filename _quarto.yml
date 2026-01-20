@@ -13,6 +13,8 @@ website:
     right:
       - text: "Slides"
         href: slides/slides.qmd
+      - icon: cloud-fill
+        href: https://posit.cloud/content/11740016
 
 format:
   html:
