@@ -102,6 +102,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -162,6 +191,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#inaugural-speeches" id="toc-inaugural-speeches" class="nav-link" data-scroll-target="#inaugural-speeches">Inaugural Speeches</a>
   <ul class="collapse">
   <li><a href="#most-similar-addresses" id="toc-most-similar-addresses" class="nav-link" data-scroll-target="#most-similar-addresses">Most Similar Addresses</a></li>
+  <li><a href="#comparing-historical-and-modern-language" id="toc-comparing-historical-and-modern-language" class="nav-link" data-scroll-target="#comparing-historical-and-modern-language">Comparing Historical and Modern Language</a></li>
+  <li><a href="#finding-most-positive-president" id="toc-finding-most-positive-president" class="nav-link" data-scroll-target="#finding-most-positive-president">Finding Most Positive President</a></li>
+  </ul></li>
+  <li><a href="#supervised-machine-learning" id="toc-supervised-machine-learning" class="nav-link" data-scroll-target="#supervised-machine-learning">Supervised Machine Learning*</a></li>
+  <li><a href="#wrap-up" id="toc-wrap-up" class="nav-link" data-scroll-target="#wrap-up">Wrap Up</a>
+  <ul class="collapse">
+  <li><a href="#functions-we-have-used" id="toc-functions-we-have-used" class="nav-link" data-scroll-target="#functions-we-have-used">Functions we Have Used</a></li>
+  <li><a href="#what-is-next" id="toc-what-is-next" class="nav-link" data-scroll-target="#what-is-next">What is next?</a></li>
   </ul></li>
   <li><a href="#check-list" id="toc-check-list" class="nav-link" data-scroll-target="#check-list">Check List</a></li>
   </ul>
@@ -183,18 +220,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Follow the instructor by executing the code and modifying it as needed.</p></li>
 <li><p>Complete the exercises.</p></li>
 <li><p>Ask questions.</p></li>
+<li><p>If you feel like the workshop is moving too slowly, go ahead and start the exercises!</p></li>
 </ul>
 <p>The script is extensively commented, so you can return to any part of it later.</p>
 <div class="text-center">
-<p><a href="https://artur-baranov.github.io/text-as-data/index.qmd" class="btn btn-primary" role="button" download="workshop_qta.qmd" style="width:200px" target="_blank">Download script</a></p>
+<p><a href="https://artur-baranov.github.io/text-as-data/scripts/index.qmd" class="btn btn-primary" role="button" download="workshop_qta.qmd" style="width:200px" target="_blank">Download script</a></p>
 </div>
 <p>In case you do not have RStudio installed, see the instruction <a href="https://artur-baranov.github.io/install-R">here</a>.</p>
 </section>
 <section id="agenda" class="level1">
 <h1>Agenda</h1>
 <ul>
-<li><p>…</p></li>
-<li><p>…</p></li>
+<li><p>Similary between Texts</p></li>
+<li><p>Relative Frequency Analysis</p></li>
+<li><p>Sentiment Analysis</p></li>
+<li><p>Machine Learning: Classifiers</p></li>
 </ul>
 </section>
 <section id="brief-coding-recap" class="level1">
@@ -233,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="libraries" class="level2">
 <h2 class="anchored" data-anchor-id="libraries">Libraries</h2>
-<p>Quite frequently, we use additional libraries to extend the capabilities of R. In this workshop we highly relying on <code>quanteda</code> and <code>tidyverse</code>. Please, if you do not have these libraries, install them now.</p>
+<p>Quite frequently, we use additional libraries to extend the capabilities of R. In this workshop we highly relying on several <code>quanteda</code> libraries and <code>tidyverse</code>. Please, if you do not have these libraries, install them now.</p>
 <p>Check if you have them installed</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"quanteda"</span>, <span class="st">"quanteda.textstats"</span>) <span class="sc">%in%</span> <span class="fu">rownames</span>(<span class="fu">installed.packages</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -326,7 +366,7 @@ docs    a corpus is set of documents this the second document
 <section id="bag-of-words-approach" class="level1">
 <h1>Bag-of-Words approach</h1>
 <p>We completely destroy the order of words in our corpus. This is a quick visualization.</p>
-<p><img src="images/bag-of-words.png" class="img-fluid"> change to URL</p>
+<p><img src="https://artur-baranov.github.io/text-as-data/images/bag-of-words.png" class="img-fluid"></p>
 <p>This allows us to, say, calculate the most frequent words in the whole corpus.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">topfeatures</span>(simple_dfm, <span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -337,7 +377,12 @@ docs    a corpus is set of documents this the second document
         1         1 </code></pre>
 </div>
 </div>
-<p>change to URL <img src="images/quanteda_objects.png" class="img-fluid" alt="Quanteda Objects"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://artur-baranov.github.io/text-as-data/images/quanteda_objects.png" class="img-fluid figure-img"></p>
+<figcaption>Quanteda Objects</figcaption>
+</figure>
+</div>
 </section>
 <section id="inaugural-speeches" class="level1">
 <h1>Inaugural Speeches</h1>
@@ -377,7 +422,7 @@ docs    a corpus is set of documents this the second document
 <li><p><code>ndoc()</code>, number of documents in corpus</p></li>
 <li><p><code>docvars()</code>, access document-level variables</p></li>
 </ul>
-<p>Let’s these together</p>
+<p>Let’s try these together</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -519,22 +564,23 @@ docs         author rare
 2025-Trump          0</code></pre>
 </div>
 </div>
-<p>To simplify the task of interpretation, we can visualize the results.</p>
+<p>To simplify the task of interpretation, we can visualize the results. The code below demonstrates the power of <code>tidyverse</code> - which is helpful, but out of the scope of this workshop. If you’re interested more in this, take a look on the <a href="https://r4ds.hadley.nz/data-tidy.html">tutorial</a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>df_distance <span class="ot">=</span> <span class="fu">as.matrix</span>(address_distance) <span class="sc">%&gt;%</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"doc1"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>doc1, <span class="at">names_to =</span> <span class="st">"doc2"</span>, <span class="at">values_to =</span> <span class="st">"distance"</span>) </span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a></span>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>df_distance <span class="ot">=</span> address_distance <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.matrix</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="st">"doc1"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>doc1, <span class="at">names_to =</span> <span class="st">"doc2"</span>, <span class="at">values_to =</span> <span class="st">"distance"</span>) </span>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_distance, <span class="fu">aes</span>(doc1, doc2, <span class="at">fill =</span> distance)) <span class="sc">+</span></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Textual Distance Between Presidential Inaugural Addresses (2001-2025)"</span>,</span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="cn">NULL</span>,</span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Distance"</span>) <span class="sc">+</span></span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df_distance, <span class="fu">aes</span>(doc1, doc2, <span class="at">fill =</span> distance)) <span class="sc">+</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>() <span class="sc">+</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Textual Distance Between Presidential Inaugural Addresses (2001-2025)"</span>,</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="cn">NULL</span>,</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">fill =</span> <span class="st">"Distance"</span>) <span class="sc">+</span></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_viridis_c</span>() <span class="sc">+</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -562,50 +608,532 @@ docs         author rare
 7 2025-Trump 2013-Obama     73.7</code></pre>
 </div>
 </div>
-<p>Now, let’s transform the corpus to the level of paragraphs rather than whole speeches. This provides a more granular overview of the left corpus.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this quick exercise, let’s find the most similar paragraph between two Obama inaguaration addresses.</p>
+<p>First, we need to subset speeches by Obama using <code>corpus_subset()</code>. Fill <code>...</code> with appropriate functions or arguments.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>data_inaug_2000 <span class="ot">=</span> data_inaug_2000 <span class="sc">%&gt;%</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corpus_reshape</span>(<span class="at">to =</span> <span class="st">"paragraphs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>corpus_obama <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">...</span>(President <span class="sc">==</span> <span class="st">"Obama"</span>) <span class="sc">%&gt;%</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, let’s transform the corpus to the level of paragraphs rather than whole speeches. This provides a more granular overview of the left corpus. You can do it with <code>corpus_reshape(to = "paragraphs")</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>corpus_obama <span class="ot">=</span> ... <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corpus_reshape</span>(<span class="at">to =</span> <span class="st">"paragraphs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>How many documents are there now? Why?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ndoc</span>(data_inaug_2000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 524</code></pre>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>We can get a more detailed overview with the <code>summary()</code> function.</p>
+<p>Get a more detailed overview with the <code>summary()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">...</span>(data_inaug_2000)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">...</span>(corpus_obama)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Explore <code>corpus_reshape()</code>. Reshape <code>data_corpus_inaugural</code>to the level of sentences and store this object as <code>data_inaug_sentences</code>. What is the number of sentences (=number of documents) in this text corpus?</p>
+<p>Create a document-feature matrix object, using <code>tokens()</code> and then <code>dfm()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>data_corpus_inaugural_sent <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span> <span class="fu">corpus_reshape</span>(<span class="at">to =</span> <span class="st">'sentences'</span>)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ndoc</span>(data_corpus_inaugural)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>dfm_obama <span class="ot">=</span> ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Calculate the text similarity using <code>textstat_simil()</code> (by the way, how does it differ with <code>textstat_dist()</code>?)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>simil_obama <span class="ot">=</span> ... <span class="sc">%&gt;%</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textstat_simil</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, present the pars that are correlated between each other</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>simil_obama <span class="sc">%&gt;%</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="sc">-</span>correlation) <span class="sc">%&gt;%</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>And you can easily print them, just insert the correct IDs</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>corpus_obama[<span class="st">"..."</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">max_nchar =</span> <span class="sc">-</span><span class="dv">1</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>corpus_obama[<span class="st">"..."</span>] <span class="sc">%&gt;%</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">max_nchar =</span> <span class="sc">-</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="comparing-historical-and-modern-language" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-historical-and-modern-language">Comparing Historical and Modern Language</h2>
+<p>Imagine you want to understand how language has evolved over the centuries. Which words are definitive of historical rhetoric, and which are of modern rhetoric?</p>
+<p>To investigate this, let’s define historic language as everything before 1901, and modern language as everything from 1901 onward. We can then create a document-level variable in our corpus.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(data_corpus_inaugural) <span class="ot">=</span> <span class="fu">docvars</span>(data_corpus_inaugural) <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Language =</span> <span class="fu">ifelse</span>(Year <span class="sc">&lt;</span> <span class="dv">1901</span>, <span class="st">"Historic"</span>, <span class="st">"Modern"</span>))</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(data_corpus_inaugural) <span class="sc">%&gt;%</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tail</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 60</code></pre>
+<pre><code>   Year President FirstName      Party Language
+55 2005      Bush George W. Republican   Modern
+56 2009     Obama    Barack Democratic   Modern
+57 2013     Obama    Barack Democratic   Modern
+58 2017     Trump Donald J. Republican   Modern
+59 2021     Biden Joseph R. Democratic   Modern
+60 2025     Trump Donald J. Republican   Modern</code></pre>
 </div>
 </div>
-<p>Exercise</p>
-<p>Distance between texts (textstat_dist): leave only democrat, reshape to paragraphs, use textstat_dist to find the closest paragraphs across presidents</p>
-<p>Vocabulary + frequences</p>
-<p>Keyness analysis (week 6): words that are used by republicans/democrats</p>
-<p>Naive Bayes (textmodel_nb, week 7)</p>
-<p>Topic modeling</p>
-<p>Sentiment: https://tutorials.quanteda.io/advanced-operations/targeted-dictionary-analysis/</p>
-<p>ChatGPT outperforms crowd workers for text-annotation tasks paper</p>
+<p>Process text to create a document-feature matrix. Let’s tokenize it and remove the stopwords.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>dfm_historic <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens</span>(<span class="at">remove_punct =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_symbols =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_numbers =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>(<span class="st">"en"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Currently, the corpus represents addresses by the presidents. However, if we want to compare historic and modern speeches, we need to change the unit of analysis. For this task, we can group by the type of Language - the variable we have created above. How many documents are there?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>dfm_historic <span class="ot">=</span> dfm_historic <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm_group</span>(Language)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>dfm_historic</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Document-feature matrix of: 2 documents, 9,359 features (31.61% sparse) and 1 docvar.
+          features
+docs       fellow-citizens senate house representatives among vicissitudes
+  Historic              36     12     5              16    59            5
+  Modern                 3      3     6               3    49            0
+          features
+docs       incident life event filled
+  Historic        7   30    13      4
+  Modern          1  111     3      2
+[ reached max_nfeat ... 9,349 more features ]</code></pre>
+</div>
+</div>
+<p>To understand the difference between Modern and Historic languages, we use Relative frequency analysis <code>textstat_keyness()</code>. Then, let’s visualize it. Did our stopwords list worked as expected?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>key_historic <span class="ot">=</span> dfm_historic <span class="sc">%&gt;%</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">textstat_keyness</span>(<span class="at">target =</span> <span class="st">"Historic"</span>)</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>key_historic <span class="sc">%&gt;%</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       feature      chi2            p n_target n_reference
+1 constitution 120.77355 0.000000e+00      185          25
+2        union 102.12659 0.000000e+00      165          25
+3       states  98.54139 0.000000e+00      264          79
+4       public  86.54480 0.000000e+00      184          43
+5    interests  48.28855 3.678946e-12       95          20
+6        state  43.16201 5.038980e-11       91          21</code></pre>
+</div>
+</div>
+<p>It would be easier to understand what’s going on if we visualize. Load <code>quanteda.textplots</code> library, install it with <code>install.packages()</code> if needed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda.textplots)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a><span class="fu">textplot_keyness</span>(key_historic) <span class="sc">+</span></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Historic vs Modern Speech Comparison"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this exercise you are interested in comparing partisan language. Let’s focus on data since 1950 and keep only speeches from Democrats and Republicans. You know how to do this by now! How many documents are there?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>data_inaug_1950 <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">...</span>(Party <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Democratic"</span>, <span class="st">"Republican"</span>) <span class="sc">&amp;</span> Year <span class="sc">&gt;=</span> <span class="dv">1950</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>How many documents are there?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Preprocess text. First, tokenize the corpus. Remove stopwords. Then, turn it to a document feature matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>dfm_inaug_1950 <span class="ot">=</span> data_inaug_1950 <span class="sc">%&gt;%</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">...</span>(<span class="at">remove_punct =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_symbols =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_numbers =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>(<span class="st">"en"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We want to compare the partisanship language. Therefore, we need to change the unit of analysis to parties. Let’s <code>dfm_group()</code> our document-feature matrix by <code>Party</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>dfm_inaug_1950 <span class="ot">=</span> dfm_inaug_1950 <span class="sc">%&gt;%</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To understand the difference in partisan language, we use <code>textstat_keyness()</code>, and then we are visualizing it using <code>textplot_keyness()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>party_key <span class="ot">=</span> ...</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">...</span>(<span class="at">target =</span> <span class="st">"Democratic"</span>)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="fu">...</span>(party_key) <span class="sc">+</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Partisan Speech Comparison"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="finding-most-positive-president" class="level2">
+<h2 class="anchored" data-anchor-id="finding-most-positive-president">Finding Most Positive President</h2>
+<p>Now, imagine you want to find out who is the most optimistic president. To do this, we can apply sentiment analysis. Explore the dictionary embedded in quanteda below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>data_dictionary_LSD2015</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Dictionary object with 4 key entries.
+- [negative]:
+  - a lie, abandon*, abas*, abattoir*, abdicat*, aberra*, abhor*, abject*, abnormal*, abolish*, abominab*, abominat*, abrasiv*, absent*, abstrus*, absurd*, abus*, accident*, accost*, accursed* [ ... and 2,838 more ]
+- [positive]:
+  - ability*, abound*, absolv*, absorbent*, absorption*, abundanc*, abundant*, acced*, accentuat*, accept*, accessib*, acclaim*, acclamation*, accolad*, accommodat*, accomplish*, accord, accordan*, accorded*, accords [ ... and 1,689 more ]
+- [neg_positive]:
+  - best not, better not, no damag*, no no, not ability*, not able, not abound*, not absolv*, not absorbent*, not absorption*, not abundanc*, not abundant*, not acced*, not accentuat*, not accept*, not accessib*, not acclaim*, not acclamation*, not accolad*, not accommodat* [ ... and 1,701 more ]
+- [neg_negative]:
+  - not a lie, not abandon*, not abas*, not abattoir*, not abdicat*, not aberra*, not abhor*, not abject*, not abnormal*, not abolish*, not abominab*, not abominat*, not abrasiv*, not absent*, not abstrus*, not absurd*, not abus*, not accident*, not accost*, not accursed* [ ... and 2,840 more ]</code></pre>
+</div>
+</div>
+<p>We tokenize the corpus, and apply the sentiment dictionary. It simply calculates how many words are negative or positive in speech of each president. Quite a frequency analysis!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>dfm_sentiment <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span></span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_lookup</span>(data_dictionary_LSD2015) <span class="sc">%&gt;%</span></span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm</span>() </span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>dfm_sentiment</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Document-feature matrix of: 60 documents, 4 features (19.17% sparse) and 5 docvars.
+                 features
+docs              negative positive neg_positive neg_negative
+  1789-Washington       43      122            0            0
+  1793-Washington        3       10            0            0
+  1797-Adams            61      239            0            4
+  1801-Jefferson        70      177            2            0
+  1805-Jefferson        95      164            3            1
+  1809-Madison          62      138            0            4
+[ reached max_ndoc ... 54 more documents ]</code></pre>
+</div>
+</div>
+<p>However, let’s use formula by (Proksch et al., 2019)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> to calculate the sentiment. But first, let’s export our document-feature matrix to data frame.</p>
+<p><span class="math display">\[
+\log\frac{\text{pos} + 0.5}{\text{neg} + 0.5}
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>president_sentiment <span class="ot">=</span> dfm_sentiment <span class="sc">%&gt;%</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">convert</span>(<span class="at">to =</span> <span class="st">"data.frame"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sentiment =</span> <span class="fu">log</span>((positive <span class="sc">+</span> neg_negative <span class="sc">+</span> <span class="fl">0.5</span>) <span class="sc">/</span> (negative <span class="sc">+</span> neg_positive <span class="sc">+</span> <span class="fl">0.5</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(<span class="fu">docvars</span>(dfm_sentiment))</span>
+<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>president_sentiment <span class="sc">%&gt;%</span></span>
+<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           doc_id negative positive neg_positive neg_negative sentiment Year
+1 1789-Washington       43      122            0            0 1.0353501 1789
+2 1793-Washington        3       10            0            0 1.0986123 1793
+3      1797-Adams       61      239            0            4 1.3760798 1797
+4  1801-Jefferson       70      177            2            0 0.8953840 1801
+5  1805-Jefferson       95      164            3            1 0.5189146 1805
+6    1809-Madison       62      138            0            4 0.8241754 1809
+   President FirstName                 Party Language
+1 Washington    George                  none Historic
+2 Washington    George                  none Historic
+3      Adams      John            Federalist Historic
+4  Jefferson    Thomas Democratic-Republican Historic
+5  Jefferson    Thomas Democratic-Republican Historic
+6    Madison     James Democratic-Republican Historic</code></pre>
+</div>
+</div>
+<p>Visualize top-5 most positive presidents.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>president_sentiment <span class="sc">%&gt;%</span> </span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(sentiment, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(doc_id, sentiment), <span class="at">y =</span> sentiment, <span class="at">fill =</span> Party)) <span class="sc">+</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() <span class="sc">+</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_ordinal</span>() <span class="sc">+</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"President"</span>,</span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Sentiment"</span>,</span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Optimistic Presidents"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-48-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercises
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let’s create own dictionary and analyze frequencies. Say, you are interested to know who of the presidents mentions freedom more than the state.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>my_dict <span class="ot">=</span> <span class="fu">dictionary</span>(<span class="fu">list</span>(</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">freedom   =</span> <span class="fu">c</span>(<span class="st">"freedom"</span>, <span class="st">"liberty"</span>, <span class="st">"rights"</span>, <span class="st">"justice"</span>, <span class="st">"democracy"</span>, <span class="st">"citizen"</span>),</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">state     =</span> <span class="fu">c</span>(<span class="st">"state"</span>, <span class="st">"government"</span>, <span class="st">"administration"</span>, <span class="st">"law"</span>, <span class="st">"policy"</span>, <span class="st">"authority"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Apply this dictionary to the <code>data_corpus_inaugural</code> corpus.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>freedom_sate <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">...</span>(my_dict) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Transform tokens to document-feature matrix</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>freedom_sate <span class="ot">=</span> ... <span class="sc">%&gt;%</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>  ...</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Using <code>convert()</code> transform <code>freedom_sate</code> dfm object to <code>data.frame</code>. Create a freedom vs authority index.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>speech_freedom <span class="ot">=</span> freedom_sate <span class="sc">%&gt;%</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">...</span>(<span class="at">to =</span> <span class="st">"data.frame"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">index =</span> freedom <span class="sc">/</span> (state <span class="sc">+</span> freedom))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Visualize top-5 presidents whose speeches are dominated by freedom rhetoric.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>speech_freedom <span class="sc">%&gt;%</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(index, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(doc_id, index), <span class="at">y =</span> index)) <span class="sc">+</span></span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="supervised-machine-learning" class="level1">
+<h1>Supervised Machine Learning*</h1>
+<p>This is an extra portion, and a bit of entertaining example.</p>
+<p>Suppose you want to determine whether a person belongs to the Republican or Democratic party, but you do not know which one. You have data on previous partisan rhetoric, and you can use it to estimate how likely it is that the person belongs to each party.</p>
+<p>Let’s try this out. For this, we would need <code>quanteda.textmodels</code> library. Install it if you do not have it, and load it!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quanteda.textmodels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Use the inaugural address speeches. But leave only two parties: Republican and Democrats.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>party_inaugural <span class="ot">=</span> data_corpus_inaugural <span class="sc">%&gt;%</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">corpus_subset</span>(Party <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Republican"</span>, <span class="st">"Democratic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, as with most machine learning techniques, split the dataset into two parts: a training set, which is used to train the model, and a test set, which is used to evaluate how well the model performs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create IDs to split the data</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(party_inaugural)<span class="sc">$</span>ID <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ndoc</span>(party_inaugural)</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a><span class="co"># randomly select 30 IDs that would be in the training dataset</span></span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>train_sample <span class="ot">=</span> <span class="fu">sample</span>(<span class="fu">docvars</span>(party_inaugural)<span class="sc">$</span>ID, <span class="dv">30</span>, <span class="at">replace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a><span class="co"># specify which document belongs to a training or testing dataset</span></span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(party_inaugural) <span class="ot">=</span> <span class="fu">docvars</span>(party_inaugural) <span class="sc">%&gt;%</span></span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Train =</span> <span class="fu">ifelse</span>(ID <span class="sc">%in%</span> train_sample, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>))</span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a><span class="fu">docvars</span>(party_inaugural)<span class="sc">$</span>Party <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">docvars</span>(party_inaugural)<span class="sc">$</span>Party, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Democratic"</span>, <span class="st">"Republican"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now, process the data and create two document-feature matrices: for the training and test datasets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>dfm_party <span class="ot">=</span> party_inaugural <span class="sc">%&gt;%</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens</span>(<span class="at">remove_punct =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_number =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_symbols =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>(<span class="st">"en"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm</span>()</span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>dfm_party_train <span class="ot">=</span> dfm_party <span class="sc">%&gt;%</span></span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm_subset</span>(Train <span class="sc">==</span> <span class="cn">TRUE</span>)</span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>dfm_party_test <span class="ot">=</span> dfm_party <span class="sc">%&gt;%</span></span>
+<span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm_subset</span>(Train <span class="sc">==</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Finally, build the model!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>tmod_nb <span class="ot">=</span> <span class="fu">textmodel_nb</span>(dfm_party_train, dfm_party_train<span class="sc">$</span>Party)</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tmod_nb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+textmodel_nb.dfm(x = dfm_party_train, y = dfm_party_train$Party)
+
+Class Priors:
+(showing first 2 elements)
+Democratic Republican 
+       0.5        0.5 
+
+Estimated Feature Scores:
+              fellow citizens undertake   arduous    duties appointed   perform
+Democratic 0.0013570 0.001751 0.0001751 8.755e-05 0.0005253 4.377e-05 0.0001751
+Republican 0.0009669 0.002329 0.0000879 8.790e-05 0.0005274 1.758e-04 0.0000879
+              choice     free   people     avail customary    solemn  occasion
+Democratic 8.755e-05 0.001882 0.006478 8.755e-05 4.377e-05 0.0006128 0.0003940
+Republican 3.956e-04 0.002857 0.006197 8.790e-05 4.395e-05 0.0002198 0.0002198
+             express gratitude confidence  inspires acknowledge accountability
+Democratic 0.0001751 0.0001751  0.0010068 8.755e-05   8.755e-05      8.755e-05
+Republican 0.0002198 0.0000879  0.0005274 1.319e-04   8.790e-05      8.790e-05
+           situation   enjoins magnitude interests convinces    thanks      can
+Democratic 8.755e-05 8.755e-05 4.377e-05 0.0011381 4.377e-05 4.377e-05 0.005428
+Republican 2.198e-04 4.395e-05 1.319e-04 0.0009669 4.395e-05 1.319e-04 0.004659
+            adequate     honor conferred
+Democratic 8.755e-05 0.0004815 0.0002189
+Republican 1.758e-04 0.0007032 0.0000879</code></pre>
+</div>
+</div>
+<p>Now, let’s see how well it performs. Leave words that match between train and the test datasets.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>dfmat_matched <span class="ot">=</span> <span class="fu">dfm_match</span>(dfm_party_test, <span class="at">features =</span> <span class="fu">featnames</span>(dfm_party_train))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Predict the Party and calculate the accuracy score.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>actual_class <span class="ot">=</span> dfmat_matched<span class="sc">$</span>Party</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>predicted_class <span class="ot">=</span> <span class="fu">predict</span>(tmod_nb, <span class="at">newdata =</span> dfmat_matched)</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>tab_class <span class="ot">=</span> <span class="fu">table</span>(actual_class, predicted_class)</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>tab_class</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            predicted_class
+actual_class Democratic Republican
+  Democratic          4          3
+  Republican          3          7</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>(<span class="dv">4</span><span class="sc">+</span><span class="dv">7</span>) <span class="sc">/</span> (<span class="dv">3</span><span class="sc">+</span><span class="dv">3</span><span class="sc">+</span><span class="dv">4</span><span class="sc">+</span><span class="dv">7</span>) <span class="co"># accuracy score</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6470588</code></pre>
+</div>
+</div>
+<p>Now, let’s apply this in a new context. Based on the debate over the Irish budget of 2010, which party do the politicians resemble more: Democrats or Republicans? Why do you think we got such results?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>dfm_irishbudget <span class="ot">=</span> data_corpus_irishbudget2010 <span class="sc">%&gt;%</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens</span>(<span class="at">remove_punct =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_number =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">remove_symbols =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tokens_remove</span>(<span class="fu">stopwords</span>(<span class="st">"en"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dfm</span>()</span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>dfmat_matched <span class="ot">=</span> <span class="fu">dfm_match</span>(dfm_irishbudget, <span class="at">features =</span> <span class="fu">featnames</span>(dfm_party_train))</span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>predicted_class <span class="ot">=</span> <span class="fu">predict</span>(tmod_nb, <span class="at">newdata =</span> dfmat_matched)</span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>predicted_class</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Lenihan, Brian (FF)      Bruton, Richard (FG)        Burton, Joan (LAB) 
+               Republican                Republican                Republican 
+      Morgan, Arthur (SF)         Cowen, Brian (FF)          Kenny, Enda (FG) 
+               Republican                Republican                Republican 
+    ODonnell, Kieran (FG)      Gilmore, Eamon (LAB)    Higgins, Michael (LAB) 
+               Republican                Republican                Republican 
+      Quinn, Ruairi (LAB)     Gormley, John (Green)       Ryan, Eamon (Green) 
+               Republican                Republican                Republican 
+    Cuffe, Ciaran (Green) OCaolain, Caoimhghin (SF) 
+               Republican                Republican 
+Levels: Democratic Republican</code></pre>
+</div>
+</div>
+</section>
+<section id="wrap-up" class="level1">
+<h1>Wrap Up</h1>
+<section id="functions-we-have-used" class="level2">
+<h2 class="anchored" data-anchor-id="functions-we-have-used">Functions we Have Used</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>corpus_subset()</code></td>
+<td>Subset a corpus</td>
+</tr>
+<tr class="even">
+<td><code>corpus_reshape()</code></td>
+<td>Change corpus to another format (sentences, paragraphs, documents)</td>
+</tr>
+<tr class="odd">
+<td><code>docvars()</code></td>
+<td>Access document-level variables</td>
+</tr>
+<tr class="even">
+<td><code>tokens()</code></td>
+<td>Create a tokens object</td>
+</tr>
+<tr class="odd">
+<td><code>tokens_lookup()</code></td>
+<td>Apply dictionary to tokens</td>
+</tr>
+<tr class="even">
+<td><code>dfm()</code></td>
+<td>Create a document-feature matrix object</td>
+</tr>
+<tr class="odd">
+<td><code>dfm_group()</code></td>
+<td>Group documents by certain variable</td>
+</tr>
+<tr class="even">
+<td><code>textstat_dist()</code></td>
+<td>Calculate distance between texts</td>
+</tr>
+<tr class="odd">
+<td><code>textstat_simil()</code></td>
+<td>Calculate similarity between texts</td>
+</tr>
+<tr class="even">
+<td><code>textstat_keyness()</code></td>
+<td>Calculate relative frequency</td>
+</tr>
+<tr class="odd">
+<td><code>textmodel_nb()</code></td>
+<td>Naive Bayes classifier</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="what-is-next" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-next">What is next?</h2>
+<ul>
+<li><p>Accessible quanteda tutorials <a href="https://tutorials.quanteda.io">tutorials.quanteda.io</a></p></li>
+<li><p>Application of LLMs* <a href="https://huggingface.co/learn">huggingface.co</a></p></li>
+</ul>
+<p>*- be ready to switch to Python for this</p>
 </section>
 </section>
 <section id="check-list" class="level1">
 <h1>Check List</h1>
 <ul class="task-list">
-<li><label><input type="checkbox">R doesn’t scare me anymore</label></li>
+<li><p><label><input type="checkbox">I know what a corpus, token, and document–feature matrix are</label></p></li>
+<li><p><label><input type="checkbox">I know how to pre-process text using <code>quanteda</code> functions</label></p></li>
+<li><p><label><input type="checkbox">I can access and amend document-level variables easily</label></p></li>
+<li><p><label><input type="checkbox">I can calculate the distance and similarity between texts</label></p></li>
+<li><p><label><input type="checkbox">I am confident in comparing rhetoric between different groups with methods such as keyness</label></p></li>
+<li><p><label><input type="checkbox">I know what a vocabulary is, and can apply it to my corpus (including for the sentiment!)</label></p></li>
 </ul>
 
 
 </section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Proksch, S.O., Lowe, W., Wäckerle, J. and Soroka, S., 2019. Multilingual sentiment analysis: A new approach to measuring conflict in legislative speeches. <em>Legislative Studies Quarterly</em>, 44(1), pp.97-131.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
