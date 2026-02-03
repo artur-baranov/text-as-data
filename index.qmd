@@ -7,8 +7,6 @@ format:
     toc: true
 ---
 
-Brief test
-
 # Rules of the Workshop
 
 The workshop is intentionally applied. This means that on your laptop, you should download and launch the script. Then:

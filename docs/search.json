@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Hands-On Methods for Text-as-Data Research",
     "section": "",
-    "text": "Brief test"
+    "text": "The workshop is intentionally applied. This means that on your laptop, you should download and launch the script. Then:\n\nFollow the instructor by executing the code and modifying it as needed.\nComplete the exercises.\nAsk questions.\nIf you feel like the workshop is moving too slowly, go ahead and start the exercises!\n\nThe script is extensively commented, so you can return to any part of it later.\n\nDownload script\n\nIn case you do not have RStudio installed, see the instruction here."
   },
   {
     "objectID": "slides/slides.html#hands-on-methods-for-text-as-data-research",
